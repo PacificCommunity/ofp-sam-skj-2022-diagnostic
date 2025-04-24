@@ -1,0 +1,29 @@
+universe = vanilla
+# R always runs in the vanilla universe - (the other option is the standard universe)
+executable = mfcl.$$(Arch).$$(OpSys).bat
+getenv = false
+error = $(Cluster).$(Process).condor_mfcl.err
+log = $(Cluster).$(Process).condor_mfcl.log
+output = $(Cluster).$(Process).condor_mfcl.out
+#notify_user=
+should_transfer_files = YES
+
+Requirements =  \
+(REALM == "SUV") && (REALM == "SUV") && (REALM == "SUV") && (OpSys =="LINUX") && (Arch=="X86_64") && (Machine != "OFP-VM-Rob01") && (Machine != "finlays-VirtualBox")
+##&& \
+##    ((Machine=="NOUOFPSUPCAL")||(Machine=="NOUOFPCAND06")||\
+##    (Machine=="NOUOFPCAND07")||(Machine=="NOUOFPCAND07"))
+request_memory=6500
+request_disk=650000
+transfer_output_remaps = \
+"doitall.condor = $(Cluster).$(Process).doitall.condor"
+# rename things so we know what cluster and process they come from
+when_to_transfer_output = ON_EXIT_OR_EVICT
+priority=0
+# bring it all back whether or not it succeeds
+##only remove from the queue with exit-code = 0 = it ran.
+#on_exit_remove = (CurrentTime > 0) && (ExitCode == 0)
+## paths for these files need to be relative to final run directory (..../Model_runs/rundir )
+TRANSFER_INPUT_FILES = Start.tar.gz
+TRANSFER_OUTPUT_FILES = End.tar.gz
+queue
