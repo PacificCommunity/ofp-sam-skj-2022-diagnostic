@@ -21,9 +21,9 @@ fisheries$sel_group <- NULL
 
 # CPUE data
 cpue <- realisations(frq)
-cpue <- cpue[cpue$fishery %in% 32:41,]  # index fisheries
+cpue <- merge(cpue, fisheries[c("fishery", "area", "flag")])
+cpue <- cpue[cpue$flag == "INDEX",]
 cpue$season <- (1 + cpue$month) / 3
-cpue <- merge(cpue, fisheries[c("fishery", "area")])  # area column
 cpue$index <- cpue$catch / cpue$effort
 cpue <- cpue[c("year", "season", "fishery", "area", "index")]
 
