@@ -1,6 +1,6 @@
 ## Extract population results, write TAF output tables
 
-## Before: 11.par, catch.rep, plot-11.par.rep, (model), fisheries.csv (data)
+## Before: 09.par, catch.rep, plot-09.par.rep, (model), fisheries.csv (data)
 ## After:  biology.csv, biomass.csv, catch.csv, f_aggregate.csv, f_annual.csv,
 ##         f_season.csv, f_stage.csv, natage.csv, selectivity.csv,
 ##         summary.csv (output)
@@ -12,8 +12,8 @@ source("utilities.R")  # reading
 mkdir("output")
 
 # Read MFCL output files
-par <- reading("parameters", read.MFCLPar(finalPar("model")))
-rep <- reading("model estimates", read.MFCLRep(finalRep("model")))
+par <- reading("parameters", read.MFCLPar("model/09.par"))
+rep <- reading("model estimates", read.MFCLRep("model/plot-09.par.rep"))
 catches <- reading("catches", read.MFCLCatch("model/catch.rep",
                                              dimensions(par), range(par)))
 
