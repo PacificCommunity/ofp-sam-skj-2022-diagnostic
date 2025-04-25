@@ -1,8 +1,7 @@
 ## Preprocess data, write TAF data tables
 
-## Before: fdesc.txt, yft.age_length, yft.frq, yft.tag (boot/data),
-##         length.fit (boot/model_results)
-## After:  cpue.csv, fisheries.csv, length_comps.csv, otoliths.csv,
+## Before: fdesc.txt, length.fit, skj.frq, skj.tag (boot/data),
+## After:  cpue.csv, length_comps.csv, otoliths.csv,
 ##         tag_recaptures.csv, tag_releases.csv, weight_comps.csv (data)
 
 library(TAF)
@@ -12,32 +11,21 @@ source("utilities.R")  # reading
 mkdir("data")
 
 # Read data
-oto <- reading("otolith data",
-               read.MFCLALK("boot/data/yft.age_length",
-                            "boot/data/model_results/length.fit"))
-frq <- reading("catch data", read.MFCLFrq("boot/data/yft.frq"))
 fisheries <- reading("fisheries description",
                      read.table("boot/data/fdesc.txt", fill=TRUE, header=TRUE))
-tag <- reading("tagging data", read.MFCLTag("boot/data/yft.tag"))
+frq <- reading("catch data", read.MFCLFrq("boot/data/skj.frq"))
+tag <- reading("tagging data", read.MFCLTag("boot/data/skj.tag"))
 
 # Fisheries description
-names(fisheries)[names(fisheries) == "region"] <- "area"
-
-# Otolith data
-otoliths <- ALK(oto)
-otoliths <- otoliths[otoliths$obs > 0,]
-otoliths <- otoliths[rep(seq_len(nrow(otoliths)), otoliths$obs),]
-otoliths$season <- (1 + otoliths$month) / 3
-otoliths$area <- fisheries$area[otoliths$fishery]
-otoliths <- otoliths[c("year", "season", "area", "age", "length")]
+fisheries$sel_group <- NULL
 
 # CPUE data
 cpue <- realisations(frq)
-cpue <- cpue[cpue$fishery %in% 33:37,]  # index fisheries
+cpue <- cpue[cpue$fishery %in% 32:41,]  # index fisheries
 cpue$season <- (1 + cpue$month) / 3
-cpue$area <- cpue$fishery - 32
-cpue$index <- cpue$catch / cpue$effort / 1e6
-cpue <- cpue[c("year", "season", "area", "index")]
+cpue$area <- cpue$fishery - 31
+cpue$index <- cpue$catch / cpue$effort
+cpue <- cpue[c("year", "season", "fishery", "index")]
 
 # Size data
 size <- freq(frq)
