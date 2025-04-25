@@ -11,11 +11,13 @@ source("utilities.R")  # reading
 mkdir("output")
 
 # Read MFCL output files
-fisheries <- read.taf("data/fisheries.csv")
 par <- reading("parameters", read.MFCLPar("model/09.par"))
 rep <- reading("model estimates", read.MFCLRep("model/plot-09.par.rep"))
 like <- reading("likelihoods", read.MFCLLikelihood("model/test_plot_output"))
 lenfit <- reading("length fits", read.MFCLLenFit("model/length.fit"))
+
+# Read fisheries description
+fisheries <- read.taf("data/fisheries.csv")
 
 # Model stats
 npar <- n_pars(par)
@@ -37,9 +39,9 @@ obs <- as.data.frame(cpue_obs(rep))
 pred <- as.data.frame(cpue_pred(rep))
 names(obs)[names(obs) == "data"] <- "obs"
 names(pred)[names(pred) == "data"] <- "pred"
-cpue <- merge(obs, pred)
-cpue <- cpue[cpue$unit %in% 32:41,]
+cpue <- cbind(obs, pred["pred"])
 names(cpue)[names(cpue) == "unit"] <- "fishery"
+cpue <- cpue[cpue$fishery %in% 32:41,]
 cpue$area <- NULL
 cpue <- merge(cpue, fisheries[c("fishery", "area")])
 cpue <- cpue[!is.na(cpue$obs),]
