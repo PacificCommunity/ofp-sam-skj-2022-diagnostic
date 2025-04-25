@@ -1,8 +1,8 @@
 ## Preprocess data, write TAF data tables
 
 ## Before: fdesc.txt, length.fit, skj.frq, skj.tag (boot/data),
-## After:  cpue.csv, length_comps.csv, otoliths.csv,
-##         tag_recaptures.csv, tag_releases.csv, weight_comps.csv (data)
+## After:  cpue.csv, fisheries.csv, length_comps.csv, tag_recaptures.csv,
+##         tag_releases.csv (data)
 
 library(TAF)
 taf.library(FLR4MFCL)
@@ -23,9 +23,9 @@ fisheries$sel_group <- NULL
 cpue <- realisations(frq)
 cpue <- cpue[cpue$fishery %in% 32:41,]  # index fisheries
 cpue$season <- (1 + cpue$month) / 3
-cpue$area <- cpue$fishery - 31
+cpue <- merge(cpue, fisheries[c("fishery", "area")])  # area column
 cpue$index <- cpue$catch / cpue$effort
-cpue <- cpue[c("year", "season", "fishery", "index")]
+cpue <- cpue[c("year", "season", "fishery", "area", "index")]
 
 # Size data
 size <- freq(frq)
@@ -35,11 +35,6 @@ size <- size[size$freq != -1,]
 length.comps <- size[!is.na(size$length),]
 length.comps$season <- (1 + length.comps$month) / 3
 length.comps <- length.comps[c("year", "season", "fishery", "length", "freq")]
-
-# Weight compositions
-weight.comps <- size[!is.na(size$weight),]
-weight.comps$season <- (1 + weight.comps$month) / 3
-weight.comps <- weight.comps[c("year", "season", "fishery", "weight", "freq")]
 
 # Tag releases and recaptures
 tag.releases <- releases(tag)
@@ -60,9 +55,7 @@ tag.recaptures <- tag.recaptures[
 
 # Write TAF tables
 write.taf(fisheries, dir="data")
-write.taf(otoliths, dir="data")
 write.taf(cpue, dir="data")
 write.taf(length.comps, dir="data")
-write.taf(weight.comps, dir="data")
 write.taf(tag.releases, dir="data")
 write.taf(tag.recaptures, dir="data")
