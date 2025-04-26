@@ -1,5 +1,5 @@
 #!/bin/sh
-cd $_CONDOR_SCRATCH_DIR
+
 export PATH=.:$PATH
 export ADTMP1=.
 #$MFCL
