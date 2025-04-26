@@ -94,7 +94,7 @@ source.taf("output.R")
 source.taf("report.R")
 ```
 
-A shortcut script is provided, to run the TAF analysis in 1 minute rather than 10 hours:
+A shortcut script is provided, to run the TAF analysis in 1 minute rather than 12 hours:
 
 ```
 library(TAF)
